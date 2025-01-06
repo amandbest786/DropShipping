@@ -21,7 +21,7 @@ router.delete('/Delete-Supplier/:id', supplier.deleteSupplier);
 //Order Routes
 router.post('/Place-Order', order.placeOrder);
 
-//Shopify Routes
+//Shopify Routes 
 router.post('/Place-Order', order.placeOrder);
 
 module.exports = router;
