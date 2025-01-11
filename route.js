@@ -10,6 +10,7 @@ router.get('/Get-Products', product.getProducts);
 router.get('/Get-Product-Byid/:id', product.getProductById);
 router.patch('/Update-Product/:id', product.updateProduct);
 router.delete('/Delete-Product/:id', product.deleteProduct);
+router.get('/getDistance',product.findDistance);
 
 //Supplier Routes
 router.post('/Add-Supplier', supplier.addSupplier);
