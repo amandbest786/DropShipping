@@ -1,5 +1,5 @@
 const ProductModel = require("../Schemas/productSchema");
-
+const findGeocode = require("../Utils/findGeocode");
 class Product {
   constructor() {}
 
@@ -76,6 +76,14 @@ class Product {
       console.error(`Error deleting product: ${error.message}`);
       return res.status(500).json({ error: "Error deleting product" });
     }
+  }
+
+  async findDistance(req,res){
+    const {productAddtress,shellerAddress} = req.body;
+    console.log(",,,,,><><><><>",productAddtress,shellerAddress)
+    const getDistance = await findGeocode.calculateDistanceBetweenTwoPoints(productAddtress,shellerAddress);
+    console.log("get distance....<><><{}{}{}",getDistance)
+    return res.status(200).send({msg:"Distance of the response",data:getDistance})
   }
 }
 
