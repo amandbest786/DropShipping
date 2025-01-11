@@ -21,12 +21,12 @@ const supplierSchema = new mongoose.Schema(
     packagingCharges: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
     moq: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
     sellingProducts: {
       type: mongoose.Schema.Types.Mixed,
@@ -63,6 +63,10 @@ const supplierSchema = new mongoose.Schema(
     updatedAt: {
       type: Date,
       default: Date.now,
+    },
+    rating: {
+      type: mongoose.Schema.Types.Decimal128,
+      default: 0.0,
     },
   },
   { timestamps: true }

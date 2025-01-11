@@ -6,44 +6,59 @@ class AggregateQuery {
   async getBestSupplier(productSku) {
     const aggregation = await productModel.aggregate([
       {
-        $match: {
-          sku: productSku,
-        },
-      },
-      {
         $lookup: {
           from: "suppliers",
           localField: "sku",
           foreignField: "sellingProducts.sku",
-          as: "allSellerDetails",
+          as: "supplierDetails",
         },
       },
       {
-        $unwind: "allSellerDetails",
-        $unwind: "allSellerDetails.sellingProducts",
+        $unwind: "$supplierDetails",
+      },
+      {
+        $unwind: "$supplierDetails.sellingProducts",
       },
       {
         $match: {
           $and: [
-            { "allSellerDetails.sellingProducts.sku": productSku }, 
-            { $gt: ["allSellerDetails.sellingProducts.quantity", 0] },
+            { "supplierDetails.sellingProducts.sku": productSku },
+            {
+              $expr: {
+                $gte: ["$supplierDetails.sellingProducts.quantity", 2], //need to change this dynamically
+              },
+            },
+            //MOQ logic will be written on the sum of all ordered quantity to the specefic suppler.
           ],
         },
       },
       {
         $addFields: {
-          totalPrice: { $add: ["$allSellerDetails.sellingProducts.price", "$allSellerDetails.packagingCharges"] },
+          totalPrice: {
+            $add: [
+              "$supplierDetails.sellingProducts.price",
+              "$supplierDetails.packagingCharges",
+            ],
+          },
         },
       },
       {
-        $sort:1
+        $sort: {
+          totalPrice: 1,
+          rating: -1,
+        },
       },
       {
-        $limit:1
+        $limit: 1
+      },
+      {
+        $project: {
+          supplierId: "$supplierDetails._id",
+          _id: 0
+        }
       }
     ]);
-
-    console.log(aggregation);
+    return aggregation;
   }
 }
 

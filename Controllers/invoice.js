@@ -85,7 +85,32 @@ class SellerInvoice {
       sellerName,
     } = invoice;
 
-    return `<!DOCTYPE html><html><head><title>${company} Invoice</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"><style>.container{width:800px;margin:20px auto;padding:20px;border-radius:10px;box-shadow:0 0 8px rgba(0,0,0,.1)}body{font-family:'Poppins',sans-serif;}h1,h3{text-align:center}table{border-collapse:collapse;width:90%;margin:0 auto;margin-top:20px}td,th{border:1px solid #ddd;padding:8px;text-align:left}th{background-color:#f2f2f2}.footer{text-align:center;margin-top:20px}.important-message{text-align:center;color:black}</style></head><body><div class="container"><h1>${company}</h1><h3>Phone: 8839203290</h3><table><tr><th>Supplier | GSTIN</th><td>${sellerName} | ${seller.gstin}</td></tr><tr><th>Phone</th><td>${seller.phone}</td></tr><tr><th>Total Items</th><td>${totalItems}</td></tr><tr><th>Total Amount</th><td>${(totalCost + (totalItems*seller.packagingCharges)).toFixed(2)}</td></tr><tr><th>Order Date</th><td>${date}</td></tr></table><table><tr><th>Sr. No.</th><th>Order No.</th><th>Product Name</th><th>Qty</th><th>MRP (Incl. Packing)</th><th>Link</th></tr>${orderDetails.map((item, index) => `<tr><td>${index + 1}</td><td>${item["Name"]}</td><td>${item["Lineitem name"]}</td><td>${item["Lineitem quantity"]}</td><td>${(item.itemCostPrice * item["Lineitem quantity"]) + (seller.packagingCharges * item["Lineitem quantity"])}</td><td><a href="${item.shippingLabelLink}">Box Label</a><br>------<br><a href="${item.invoiceLink}">Invoice</a></td></tr>`).join('')}</table><b><h3>IMPORTANT</h3><p class="important-message">1. Please pack all items within 12-24 hours, for on-time dispatch.<br>2. After packing all items, whatsapp a photo of the packed items to 8839203290.<br>3. Once we receive the packed image, the delivery partner will come for pick-up.</p></b></body></html>`;
+    return `<!DOCTYPE html><html><head><title>${company} Invoice</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"><style>.container{width:800px;margin:20px auto;padding:20px;border-radius:10px;box-shadow:0 0 8px rgba(0,0,0,.1)}body{font-family:'Poppins',sans-serif;}h1,h3{text-align:center}table{border-collapse:collapse;width:90%;margin:0 auto;margin-top:20px}td,th{border:1px solid #ddd;padding:8px;text-align:left}th{background-color:#f2f2f2}.footer{text-align:center;margin-top:20px}.important-message{text-align:center;color:black}</style></head><body><div class="container"><h1>${company}</h1><h3>Phone: 8839203290</h3><table><tr><th>Supplier | GSTIN</th><td>${sellerName} | ${
+      seller.gstin
+    }</td></tr><tr><th>Phone</th><td>${
+      seller.phone
+    }</td></tr><tr><th>Total Items</th><td>${totalItems}</td></tr><tr><th>Total Amount</th><td>${(
+      totalCost +
+      totalItems * seller.packagingCharges
+    ).toFixed(
+      2
+    )}</td></tr><tr><th>Order Date</th><td>${date}</td></tr></table><table><tr><th>Sr. No.</th><th>Order No.</th><th>Product Name</th><th>Qty</th><th>MRP (Incl. Packing)</th><th>Link</th></tr>${orderDetails
+      .map(
+        (item, index) =>
+          `<tr><td>${index + 1}</td><td>${item["Name"]}</td><td>${
+            item["Lineitem name"]
+          }</td><td>${item["Lineitem quantity"]}</td><td>${
+            item.itemCostPrice * item["Lineitem quantity"] +
+            seller.packagingCharges * item["Lineitem quantity"]
+          }</td><td><a href="${
+            item.shippingLabelLink
+          }">Box Label</a><br>------<br><a href="${
+            item.invoiceLink
+          }">Invoice</a></td></tr>`
+      )
+      .join(
+        ""
+      )}</table><b><h3>IMPORTANT</h3><p class="important-message">1. Please pack all items within 12-24 hours, for on-time dispatch.<br>2. After packing all items, whatsapp a photo of the packed items to 8839203290.<br>3. Once we receive the packed image, the delivery partner will come for pick-up.</p></b></body></html>`;
   }
 
   today() {

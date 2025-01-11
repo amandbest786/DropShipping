@@ -14,37 +14,15 @@ class Order {
       const orderDetails = req.body;
       const response = { productNotFound: [], supplierNotFound: [] };
 
-     
       const processedOrders = await Promise.all(
         orderDetails.map(async (order) => {
           const sku = order["Lineitem sku"];
           const aggregationResult = await AggregateQuery.getBestSupplier(sku);
-          console.log(aggregationResult)
-          const product = await ProductModel.findOne({ sku });
-          if (!product) {
-            response.productNotFound.push(sku);
-            return null; // Skip to the next order if product not found
-          }
-
-          const suppliers = await SupplierModel.find({
-            "sellingProducts.sku": sku,
-          });
-          if (!suppliers.length) {
-            response.supplierNotFound.push(sku);
-            return null; // Skip to the next order if no supplier found
-          }
-
-          const bestSupplier = suppliers.reduce((acc, curr) => {
-            const accCost =
-              (acc?.sellingProducts?.find((ele) => ele.sku === sku)?.price ||
-                0) + (acc?.packagingCharges || 0);
-            const currCost =
-              (curr?.sellingProducts?.find((ele) => ele.sku === sku)?.price ||
-                0) + (curr?.packagingCharges || 0);
-            return accCost < currCost ? acc : curr;
-          });
-
-          return { order, supplier: bestSupplier };
+          console.log(aggregationResult);
+          const supplierDetails = await SupplierModel.findById(
+            aggregationResult[0].supplierId
+          );
+          return { order, supplier: supplierDetails };
         })
       );
 
@@ -73,9 +51,11 @@ class Order {
       }
 
       // Create invoice by calling the class method
-      const invoiceDetails = await invoiceInstance.createSellerInvoice(finalResponse);
-      
-      for(let ele of invoiceDetails){
+      const invoiceDetails = await invoiceInstance.createSellerInvoice(
+        finalResponse
+      );
+
+      for (let ele of invoiceDetails) {
         const savedOrder = await OrderModel.create(ele);
         console.log(`Order added successfully. ID: ${savedOrder._id}`);
       }
